@@ -1,0 +1,136 @@
+  {
+  "info": {
+    "name": "Caffeine.co API",
+    "description": "Base URL: http://localhost:5000/api\n\nCookies: After login, Postman stores admin_token or user_token. For POST/PUT/PATCH/DELETE on protected routes, add header X-CSRF-Token = csrfToken from login response (or csrf_token cookie).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "csrfToken", "value": "" },
+    { "key": "productId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Auth — Admin login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.csrfToken) pm.collectionVariables.set('csrfToken', json.csrfToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"123\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/admin/login"
+      }
+    },
+    {
+      "name": "Auth — Admin me",
+      "request": { "method": "GET", "url": "{{baseUrl}}/auth/admin/me" }
+    },
+    {
+      "name": "Auth — Customer register",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.csrfToken) pm.collectionVariables.set('csrfToken', json.csrfToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Test12345\",\n  \"contactNumber\": \"09171234567\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/user/register"
+      }
+    },
+    {
+      "name": "Auth — Customer sign in",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.csrfToken) pm.collectionVariables.set('csrfToken', json.csrfToken);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Test12345\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/user/signin"
+      }
+    },
+    {
+      "name": "Auth — Customer me",
+      "request": { "method": "GET", "url": "{{baseUrl}}/auth/user/me" }
+    },
+    {
+      "name": "Products — List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json[0]?._id) pm.collectionVariables.set('productId', json[0]._id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/products"
+      }
+    },
+    {
+      "name": "Orders — Create (guest)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerName\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"contactNumber\": \"09171234567\",\n  \"deliveryAddress\": \"123 Coffee St\",\n  \"city\": \"Manila\",\n  \"postalCode\": \"1000\",\n  \"items\": [{ \"productId\": \"{{productId}}\", \"quantity\": 1 }]\n}"
+        },
+        "url": "{{baseUrl}}/orders"
+      }
+    },
+    {
+      "name": "Orders — List (admin)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/orders" }
+    },
+    {
+      "name": "Logs — Activity (admin)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/logs" }
+    }
+  ]
+}

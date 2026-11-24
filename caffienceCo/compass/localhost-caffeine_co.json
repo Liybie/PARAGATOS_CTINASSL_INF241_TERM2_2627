@@ -1,0 +1,6 @@
+{
+  "connectionString": "mongodb://localhost:27017/caffeine_co",
+  "favorite": {
+    "name": "Caffeine.co (local)"
+  }
+}
